@@ -4,6 +4,20 @@
 #include <QObject>
 
 class QWindow;
+class QEvent;
+
+class DynamicPropertyChangeWatcher : public QObject
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(DynamicPropertyChangeWatcher)
+
+public:
+    DynamicPropertyChangeWatcher(QObject *parent);
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
+};
+
 
 class QnxCompositor : public QObject
 {
@@ -13,6 +27,7 @@ public:
 
 signals:
     void windowCreated(QWindow *window);
+    void windowDeleted(QWindow *window);
 
 public slots:
 };
