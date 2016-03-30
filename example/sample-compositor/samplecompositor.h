@@ -3,10 +3,13 @@
 
 #include "qnxcompositor.h"
 
-class SampleCompositor : public QnxCompositor
+class SampleCompositor
 {
 public:
     SampleCompositor();
+
+private:
+    QnxCompositor m_qnxCompositor;
 };
 
 #endif // SAMPLECOMPOSITOR_H

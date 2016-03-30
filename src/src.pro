@@ -6,6 +6,11 @@ TEMPLATE = lib
 TARGET = qnxcompositor
 INCLUDEPATH += .
 
+QT = core gui
+
 # Input
 HEADERS += qnxcompositor.h
 SOURCES += qnxcompositor.cpp
+
+target.path += $$[QT_INSTALL_LIBS]
+INSTALLS += target

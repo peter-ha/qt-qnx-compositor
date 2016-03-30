@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = compositor
+TARGET = sample-compositor
 
 ### make path to qnxcompositor lib absolute or so
 INCLUDEPATH += . ../../src
@@ -16,3 +16,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     samplecompositor.h
+
+target.path += $$[QT_INSTALL_BINS]
+INSTALLS += target
