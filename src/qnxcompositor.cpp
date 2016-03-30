@@ -31,7 +31,16 @@ bool DynamicPropertyChangeWatcher::eventFilter(QObject *object, QEvent *event)
 
 QnxCompositor::QnxCompositor(QObject *parent) : QObject(parent)
 {
+    // init needs a QCoreApplication instance, so call it through
+    // the event loop
+    QMetaObject::invokeMethod(this, "init", Qt::QueuedConnection);
+}
+
+void QnxCompositor::init()
+{
     // make sure we get informed about windows being created and destroyed
     DynamicPropertyChangeWatcher *watcher = new DynamicPropertyChangeWatcher(this);
+    Q_ASSERT_X(QCoreApplication::instance() != Q_NULLPTR, "QnxCompositor",
+               "cannot create QnxCompositor before QCoreApplication");
     QCoreApplication::instance()->installEventFilter(watcher);
 }

@@ -29,7 +29,8 @@ signals:
     void windowCreated(QWindow *window);
     void windowDeleted(QWindow *window);
 
-public slots:
+private:
+    Q_INVOKABLE void init();
 };
 
 #endif // QNXCOMPOSITOR_H
