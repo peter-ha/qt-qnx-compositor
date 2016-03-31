@@ -4,6 +4,8 @@
 #include <QCoreApplication>
 #include <QDebug> // ### remove
 
+#include <screen/screen.h>
+
 #include "qnxcompositor.h"
 
 DynamicPropertyChangeWatcher::DynamicPropertyChangeWatcher(QObject *parent)
@@ -16,13 +18,14 @@ bool DynamicPropertyChangeWatcher::eventFilter(QObject *object, QEvent *event)
     if (event->type() == QEvent::DynamicPropertyChange) {
         qDebug() << "@@@ dynamic property change";
         QVariant windowVariant = object->property("QNXWindowCreated");
-        if (windowVariant.isValid()) {
-            void *window = windowVariant.value<void *>();
-            Q_ASSERT(window);
-            // ### here emit signal
-        } else {
-            // ### should not happen
-        }
+        Q_ASSERT(windowVariant.isValid());
+        void *window = windowVariant.value<void *>();
+        Q_ASSERT(window);
+        const screen_window_t nativeWindow =
+                reinterpret_cast<screen_window_t>(window);
+        QnxCompositor *compositor = qobject_cast<QnxCompositor *>(parent());
+        qDebug() << "compositor:" << compositor;
+        emit compositor->windowCreated(window);
         return true;
     } else {
         return QObject::eventFilter(object, event);

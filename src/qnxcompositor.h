@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include <screen/screen.h>
+
 class QWindow;
 class QEvent;
 
@@ -26,8 +28,8 @@ public:
     explicit QnxCompositor(QObject *parent = 0);
 
 signals:
-    void windowCreated(QWindow *window);
-    void windowDeleted(QWindow *window);
+    void windowCreated(void *nativeWindow);
+    void windowDeleted(void *nativeWindow);
 
 private:
     Q_INVOKABLE void init();

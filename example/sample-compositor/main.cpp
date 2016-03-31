@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv)
 {
-    SampleCompositor compositor;
     QGuiApplication app(argc, argv);
+    SampleCompositor compositor;
     return app.exec();
 }

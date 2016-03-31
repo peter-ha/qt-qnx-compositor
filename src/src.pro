@@ -8,6 +8,8 @@ INCLUDEPATH += .
 
 QT = core gui
 
+LIBS += -lscreen
+
 # Input
 HEADERS += qnxcompositor.h
 SOURCES += qnxcompositor.cpp

@@ -8,7 +8,10 @@ TARGET = sample-compositor
 ### make path to qnxcompositor lib absolute or so
 INCLUDEPATH += . ../../src
 
+QT += qml quick
+
 LIBS += -L../../src -lqnxcompositor
+LIBS += -lscreen
 
 # Input
 SOURCES += main.cpp \
@@ -19,3 +22,9 @@ HEADERS += \
 
 target.path += $$[QT_INSTALL_BINS]
 INSTALLS += target
+
+DISTFILES += \
+    main.qml
+
+RESOURCES += \
+    qmlfiles.qrc
