@@ -31,7 +31,7 @@ SampleCompositor::SampleCompositor(QObject *parent) : QObject(parent),
 
 void SampleCompositor::startApp(const QString &appName)
 {
-    qWarning() << "starting" << appName;
+    qWarning() << Q_FUNC_INFO << "starting" << appName;
     if (m_process1 == Q_NULLPTR) {
         m_process1 = new QProcess(this);
         m_process1->start(appName);
@@ -43,12 +43,17 @@ void SampleCompositor::startApp(const QString &appName)
 
 void SampleCompositor::windowCreated(void *window)
 {
-    int val[2];
-    val[0] = 200;
-    val[1] = 200;
-    const screen_window_t nativeWindow =
-            reinterpret_cast<screen_window_t>(window);
-    screen_set_window_property_iv(nativeWindow, SCREEN_PROPERTY_SIZE, val);
+    qDebug() << Q_FUNC_INFO;
+    int size[2];
+    size[0] = 984;
+    size[1] = 440;
+    const screen_window_t nativeWindow = reinterpret_cast<screen_window_t>(window);
+    screen_set_window_property_iv(nativeWindow, SCREEN_PROPERTY_SIZE, size);
+
+    int position[2];
+    position[0] = 20;
+    position[1] = 140;
+    screen_set_window_property_iv(nativeWindow, SCREEN_PROPERTY_POSITION, position);
 }
 
 void SampleCompositor::windowDeleted(void *window)

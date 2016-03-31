@@ -16,7 +16,6 @@ DynamicPropertyChangeWatcher::DynamicPropertyChangeWatcher(QObject *parent)
 bool DynamicPropertyChangeWatcher::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::DynamicPropertyChange) {
-        qDebug() << "@@@ dynamic property change";
         QVariant windowVariant = object->property("QNXWindowCreated");
         Q_ASSERT(windowVariant.isValid());
         void *window = windowVariant.value<void *>();
@@ -24,7 +23,6 @@ bool DynamicPropertyChangeWatcher::eventFilter(QObject *object, QEvent *event)
         const screen_window_t nativeWindow =
                 reinterpret_cast<screen_window_t>(window);
         QnxCompositor *compositor = qobject_cast<QnxCompositor *>(parent());
-        qDebug() << "compositor:" << compositor;
         emit compositor->windowCreated(window);
         return true;
     } else {

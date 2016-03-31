@@ -48,5 +48,12 @@ Rectangle {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                parent.color = "green"
+                SampleCompositor.startApp("/opt/qt-install/qnx-release/examples/quick/demos/samegame/samegame")
+            }
+        }
     }
 }
