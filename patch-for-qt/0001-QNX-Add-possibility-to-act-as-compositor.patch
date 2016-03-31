@@ -1,0 +1,86 @@
+From 2e5b85eb85f6fc5e7162c7a3963fbbcc7a772ed8 Mon Sep 17 00:00:00 2001
+From: Peter Hartmann <peter-qt@hartmann.tk>
+Date: Thu, 31 Mar 2016 04:08:45 +0200
+Subject: [PATCH] QNX: Add possibility to act as compositor
+
+Change-Id: I4b26189414fc7b899cb263e0f1d1119aca08e362
+---
+ src/plugins/platforms/qnx/qqnxintegration.cpp | 15 ++++++++++++++-
+ src/plugins/platforms/qnx/qqnxintegration.h   |  3 ++-
+ src/plugins/platforms/qnx/qqnxscreen.cpp      |  5 +++++
+ 3 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/src/plugins/platforms/qnx/qqnxintegration.cpp b/src/plugins/platforms/qnx/qqnxintegration.cpp
+index 071bab7..e5cc1a0 100644
+--- a/src/plugins/platforms/qnx/qqnxintegration.cpp
++++ b/src/plugins/platforms/qnx/qqnxintegration.cpp
+@@ -131,6 +131,9 @@ static inline QQnxIntegration::Options parseOptions(const QStringList &paramList
+         options |= QQnxIntegration::RootWindow;
+     }
+ #endif
++    if (paramList.contains(QLatin1String("compositor"))) {
++        options |= QQnxIntegration::Compositor;
++    }
+     return options;
+ }
+ 
+@@ -166,8 +169,18 @@ QQnxIntegration::QQnxIntegration(const QStringList &paramList)
+ {
+     ms_options = parseOptions(paramList);
+     qIntegrationDebug() << Q_FUNC_INFO;
++
++    // here check dynamic properties and if set use
++    // SCREEN_WINDOW_MANAGER_CONTEXT
++    int flags;
++    if (ms_options & Compositor) {
++        flags = SCREEN_WINDOW_MANAGER_CONTEXT;
++    } else {
++        flags = SCREEN_APPLICATION_CONTEXT;
++    }
++
+     // Open connection to QNX composition manager
+-    Q_SCREEN_CRITICALERROR(screen_create_context(&ms_screenContext, SCREEN_APPLICATION_CONTEXT),
++    Q_SCREEN_CRITICALERROR(screen_create_context(&ms_screenContext, flags),
+                            "Failed to create screen context");
+ 
+     // Not on BlackBerry, it has specialized event dispatcher which also handles navigator events
+diff --git a/src/plugins/platforms/qnx/qqnxintegration.h b/src/plugins/platforms/qnx/qqnxintegration.h
+index 04250cd..a4bc059 100644
+--- a/src/plugins/platforms/qnx/qqnxintegration.h
++++ b/src/plugins/platforms/qnx/qqnxintegration.h
+@@ -78,7 +78,8 @@ public:
+         NoOptions = 0x0,
+         FullScreenApplication = 0x1,
+         RootWindow = 0x2,
+-        AlwaysFlushScreenContext = 0x4
++        AlwaysFlushScreenContext = 0x4,
++        Compositor = 0x8
+     };
+     Q_DECLARE_FLAGS(Options, Option)
+     explicit QQnxIntegration(const QStringList &paramList);
+diff --git a/src/plugins/platforms/qnx/qqnxscreen.cpp b/src/plugins/platforms/qnx/qqnxscreen.cpp
+index 85c7a91..a952972 100644
+--- a/src/plugins/platforms/qnx/qqnxscreen.cpp
++++ b/src/plugins/platforms/qnx/qqnxscreen.cpp
+@@ -39,6 +39,8 @@
+ 
+ #include <QtCore/QThread>
+ #include <QtCore/QDebug>
++#include <QtCore/QCoreApplication>
++#include <QtCore/QVariant>
+ #include <qpa/qwindowsysteminterface.h>
+ 
+ #include <errno.h>
+@@ -785,6 +787,9 @@ void QQnxScreen::newWindowCreated(void *window)
+             else
+                 addOverlayWindow(windowHandle);
+             Q_EMIT foreignWindowCreated(windowHandle);
++            // ### the code below is a bit quirky
++            QVariant windowVariant = QVariant::fromValue(window);
++            QCoreApplication::instance()->setProperty("QNXWindowCreated", windowVariant);
+         }
+     }
+ }
+-- 
+1.9.1
+
